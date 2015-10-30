@@ -17,6 +17,8 @@
 
 @implementation ViewController
 
+#pragma mark - UIViewController
+
 - (void)loadView {
     UIView *mainView = [UIView new];
     
@@ -56,6 +58,8 @@
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
 }
 
+#pragma mark - CustomTextField
+
 - (BOOL) textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     
@@ -74,6 +78,8 @@
     
     return NO;
 }
+
+#pragma mark - WKNavigationDelegate
 
 -(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     [self webView:webView didFailNavigation:navigation withError:error];
