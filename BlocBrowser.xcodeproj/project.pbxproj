@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		493CCBEA1BE42D45003DBD84 /* CustomUITextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 493CCBE91BE42D45003DBD84 /* CustomUITextField.m */; };
 		4972F7471BDDA91800E49079 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4972F7461BDDA91800E49079 /* main.m */; };
 		4972F74A1BDDA91800E49079 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4972F7491BDDA91800E49079 /* AppDelegate.m */; };
 		4972F74D1BDDA91800E49079 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4972F74C1BDDA91800E49079 /* ViewController.m */; };
@@ -34,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		493CCBE81BE42D45003DBD84 /* CustomUITextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomUITextField.h; sourceTree = "<group>"; };
+		493CCBE91BE42D45003DBD84 /* CustomUITextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomUITextField.m; sourceTree = "<group>"; };
 		4972F7421BDDA91800E49079 /* BlocBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlocBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4972F7461BDDA91800E49079 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4972F7481BDDA91800E49079 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -107,6 +110,8 @@
 				4972F7531BDDA91800E49079 /* LaunchScreen.storyboard */,
 				4972F7561BDDA91800E49079 /* Info.plist */,
 				4972F7451BDDA91800E49079 /* Supporting Files */,
+				493CCBE81BE42D45003DBD84 /* CustomUITextField.h */,
+				493CCBE91BE42D45003DBD84 /* CustomUITextField.m */,
 			);
 			path = BlocBrowser;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				TargetAttributes = {
 					4972F7411BDDA91800E49079 = {
 						CreatedOnToolsVersion = 7.0.1;
+						DevelopmentTeam = 78PJWF9YQ8;
 					};
 					4972F75A1BDDA91800E49079 = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -266,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				493CCBEA1BE42D45003DBD84 /* CustomUITextField.m in Sources */,
 				4972F74D1BDDA91800E49079 /* ViewController.m in Sources */,
 				4972F74A1BDDA91800E49079 /* AppDelegate.m in Sources */,
 				4972F7471BDDA91800E49079 /* main.m in Sources */,
@@ -401,10 +408,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = BlocBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sturdynut.BlocBrowser;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -412,10 +422,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = BlocBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sturdynut.BlocBrowser;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -486,6 +499,7 @@
 				4972F7711BDDA91800E49079 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4972F7721BDDA91800E49079 /* Build configuration list for PBXNativeTarget "BlocBrowserTests" */ = {
 			isa = XCConfigurationList;
@@ -494,6 +508,7 @@
 				4972F7741BDDA91800E49079 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4972F7751BDDA91800E49079 /* Build configuration list for PBXNativeTarget "BlocBrowserUITests" */ = {
 			isa = XCConfigurationList;
@@ -502,6 +517,7 @@
 				4972F7771BDDA91800E49079 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
