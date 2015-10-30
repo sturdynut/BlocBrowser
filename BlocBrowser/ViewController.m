@@ -30,7 +30,7 @@
     self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.textField.placeholder = NSLocalizedString(@"http://", @"Placeholder text for web browser URL field");
-    self.textField.backgroundColor = [UIColor colorWithWhite:220/255.0f alpha:1];
+    self.textField.backgroundColor = [UIColor colorWithWhite:240/255.0f alpha:1];
     self.textField.delegate = self;
     
     [mainView addSubview:self.webView];
@@ -73,6 +73,27 @@
     }
     
     return NO;
+}
+
+-(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    [self webView:webView didFailNavigation:navigation withError:error];
+}
+
+-(void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    if (error.code == NSURLErrorCancelled) {
+        return;
+    }
+    
+    UIAlertController *alert =  [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", "Error")
+                                                                    message:[error localizedDescription]
+                                                             preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                       style:UIAlertActionStyleCancel handler:nil];
+    
+    [alert addAction:okAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end
