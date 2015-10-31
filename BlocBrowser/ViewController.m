@@ -11,8 +11,12 @@
 #import "CustomUITextField.h"
 
 @interface ViewController () <WKNavigationDelegate, UITextFieldDelegate>
-    @property (nonatomic, strong) WKWebView *webView;
-    @property (nonatomic, strong) CustomUITextField *textField;
+@property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, strong) CustomUITextField *textField;
+@property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) UIButton *forwardButton;
+@property (nonatomic, strong) UIButton *stopButton;
+@property (nonatomic, strong) UIButton *reloadButton;
 @end
 
 @implementation ViewController
@@ -35,8 +39,15 @@
     self.textField.backgroundColor = [UIColor colorWithWhite:240/255.0f alpha:1];
     self.textField.delegate = self;
     
-    [mainView addSubview:self.webView];
-    [mainView addSubview:self.textField];
+    self.backButton = [self setupNavButton:self.backButton withTitleKey:@"Back" andDesc:@"Back command" withAction:@selector(goBack)];
+    self.forwardButton = [self setupNavButton:self.forwardButton withTitleKey:@"Forward" andDesc:@"Forward command" withAction:@selector(goForward)];
+    self.stopButton = [self setupNavButton:self.stopButton withTitleKey:@"Stop" andDesc:@"Stop command" withAction:@selector(stopLoading)];
+    self.reloadButton = [self setupNavButton:self.reloadButton withTitleKey:@"Refresh" andDesc:@"Refresh command" withAction:@selector(reload)];
+    
+    NSArray *subViews = @[self.webView, self.textField, self.backButton, self.forwardButton, self.stopButton, self.reloadButton];
+    
+    [self addSubViews:subViews toMainView:mainView];
+    
     self.view = mainView;
 }
 
@@ -51,11 +62,19 @@
     
     static const CGFloat itemHeight = 50;
     CGFloat width = CGRectGetWidth(self.view.bounds);
-    CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight;
+    CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight - itemHeight;
+    CGFloat buttonWidth = CGRectGetWidth(self.view.bounds) / 4;
     
     
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
+    
+    CGFloat currentButtonX = 0;
+    
+    for (UIButton *thisButton in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
+        thisButton.frame = CGRectMake(currentButtonX, CGRectGetMaxY(self.webView.frame), buttonWidth, itemHeight);
+        currentButtonX += buttonWidth;
+    }
 }
 
 #pragma mark - CustomTextField
@@ -100,6 +119,23 @@
     [alert addAction:okAction];
     
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark - Helpers
+
+-(UIButton *) setupNavButton:(UIButton *)button withTitleKey:(NSString *)titleKey andDesc:(NSString *)titleDesc withAction:(SEL)action {
+    button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setEnabled:NO];
+    [button setTitle:NSLocalizedString(titleKey, titleDesc) forState:UIControlStateNormal];
+    [button addTarget:self.webView action:action forControlEvents:UIControlEventTouchUpInside];
+    
+    return button;
+}
+
+-(void) addSubViews:(NSArray *)subviews toMainView:(UIView *)mainView {
+    for (UIView *view in subviews) {
+        [mainView addSubview:view];
+    }
 }
 
 @end
