@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UIButton *forwardButton;
 @property (nonatomic, strong) UIButton *stopButton;
 @property (nonatomic, strong) UIButton *reloadButton;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @end
 
 @implementation ViewController
@@ -55,6 +56,8 @@
     [super viewDidLoad];
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
 }
 
 - (void) viewWillLayoutSubviews {
@@ -65,16 +68,9 @@
     CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight - itemHeight;
     CGFloat buttonWidth = CGRectGetWidth(self.view.bounds) / 4;
     
-    
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
-    
-    CGFloat currentButtonX = 0;
-    
-    for (UIButton *thisButton in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
-        thisButton.frame = CGRectMake(currentButtonX, CGRectGetMaxY(self.webView.frame), buttonWidth, itemHeight);
-        currentButtonX += buttonWidth;
-    }
+    [self layoutNavButtons:buttonWidth withHeight:itemHeight];
 }
 
 #pragma mark - CustomTextField
@@ -102,26 +98,63 @@
 
 -(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     [self webView:webView didFailNavigation:navigation withError:error];
+    
+    [self updateButtonsAndTitle];
 }
 
 -(void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    if (error.code == NSURLErrorCancelled) {
-        return;
-    }
+    BOOL hasError = error.code != NSURLErrorCancelled;
     
-    UIAlertController *alert =  [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", "Error")
+    if (hasError) {
+        UIAlertController *alert =  [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", "Error")
                                                                     message:[error localizedDescription]
                                                              preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                                        style:UIAlertActionStyleCancel handler:nil];
     
-    [alert addAction:okAction];
+        [alert addAction:okAction];
     
-    [self presentViewController:alert animated:YES completion:nil];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+    
+    [self updateButtonsAndTitle];
+}
+
+-(void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    [self updateButtonsAndTitle];
+}
+
+-(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    [self updateButtonsAndTitle];
 }
 
 #pragma mark - Helpers
+
+-(void) updateButtonsAndTitle {
+    NSString *webpageTitle = [self.webView.title copy];
+    self.title = [webpageTitle length] ? webpageTitle : self.webView.URL.absoluteString;
+    self.backButton.enabled = self.webView.canGoBack;
+    self.forwardButton.enabled = self.webView.canGoForward;
+    self.stopButton.enabled = self.webView.isLoading;
+    self.reloadButton.enabled = !self.webView.isLoading;
+    
+    if (self.webView.isLoading) {
+        [self.activityIndicator startAnimating];
+    }
+    else {
+        [self.activityIndicator stopAnimating];
+    }
+}
+
+-(void) layoutNavButtons:(CGFloat)buttonWidth withHeight:(CGFloat)itemHeight {
+    CGFloat currentButtonX = 0;
+    
+    for (UIButton *thisButton in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
+        thisButton.frame = CGRectMake(currentButtonX, CGRectGetMaxY(self.webView.frame), buttonWidth, itemHeight);
+        currentButtonX += buttonWidth;
+    }
+}
 
 -(UIButton *) setupNavButton:(UIButton *)button withTitleKey:(NSString *)titleKey andDesc:(NSString *)titleDesc withAction:(SEL)action {
     button = [UIButton buttonWithType:UIButtonTypeSystem];
