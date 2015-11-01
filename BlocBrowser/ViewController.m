@@ -78,16 +78,28 @@
 - (BOOL) textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     
-    NSString *URLString = textField.text;
+    NSString *urlString = textField.text;
+    NSURL *url = [NSURL URLWithString: urlString];
     
-    NSURL *URL = [NSURL URLWithString: URLString];
-    
-    if (!URL.scheme) {
-        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
+    // Prefix with http:// if not provided
+    // This may also be a search, e.g. User entered "cute kittens"
+    if (!url.scheme) {
+        NSString *searchQueryPrefix = @"";
+        NSDataDetector *urlDetector = [[NSDataDetector alloc] initWithTypes:NSTextCheckingTypeLink error:nil];
+        NSArray *urlMatches = [urlDetector matchesInString:urlString options:NSMatchingAnchored range:NSMakeRange(0, urlString.length)];
+        
+        if ([urlMatches count] == 0) {
+            // This is not a URL, prepend with a google query
+            searchQueryPrefix = @"google.com/search?q=";
+            // Url encode the search request, just replace spaces with +'s for now.
+            urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+        }
+        
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@%@", searchQueryPrefix, urlString]];
     }
     
-    if (URL) {
-        NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    if (url) {
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
         [self.webView loadRequest:request];
     }
     
