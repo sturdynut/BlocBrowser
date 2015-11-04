@@ -10,6 +10,11 @@
 
 @interface ViewController : UIViewController
 
+/* Refreshes the web view.
+    - Erases history
+    - Updates URL field and toolbar buttons accordingly
+*/
+- (void) resetWebView;
 
 @end
 
