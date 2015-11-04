@@ -24,6 +24,25 @@
 
 #pragma mark - UIViewController
 
+-(void)resetWebView {
+    [self.webView removeFromSuperview];
+    WKWebView *newWebView = [[WKWebView alloc] init];
+    newWebView.navigationDelegate = self;
+    
+    [self.view addSubview:newWebView];
+    self.webView = newWebView;
+    
+    for (UIButton *button in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
+        [button removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [self initNavigationButtons];
+    
+    self.textField.text = nil;
+    
+    [self onStateChanged];
+}
+
 - (void)loadView {
     UIView *mainView = [UIView new];
     
@@ -180,7 +199,7 @@
     self.backButton.enabled = self.webView.canGoBack;
     self.forwardButton.enabled = self.webView.canGoForward;
     self.stopButton.enabled = self.webView.isLoading;
-    self.reloadButton.enabled = !self.webView.isLoading;
+    self.reloadButton.enabled = !self.webView.isLoading && self.webView.URL;
     
     if (self.webView.isLoading) {
         [self.activityIndicator startAnimating];
