@@ -24,6 +24,21 @@
 
 #pragma mark - UIViewController
 
+-(void)showWelcomeMessage {
+    NSString *welcomeMessage = NSLocalizedString(@"Welcome to the Internet.", "Welcome message");
+    
+    UIAlertController *alert =  [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Welcome", "Welcome")
+                                                                    message:welcomeMessage
+                                                             preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                       style:UIAlertActionStyleCancel handler:nil];
+    
+    [alert addAction:okAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 -(void)resetWebView {
     [self.webView removeFromSuperview];
     WKWebView *newWebView = [[WKWebView alloc] init];

@@ -15,6 +15,8 @@
     - Updates URL field and toolbar buttons accordingly
 */
 - (void) resetWebView;
+/* Shows the welcome message */
+- (void) showWelcomeMessage;
 
 @end
 
