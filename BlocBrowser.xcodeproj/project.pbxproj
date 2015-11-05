@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		490C3F4B1BEADF9E00180EDE /* FloatingToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 490C3F4A1BEADF9E00180EDE /* FloatingToolbar.m */; };
 		493CCBEA1BE42D45003DBD84 /* CustomUITextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 493CCBE91BE42D45003DBD84 /* CustomUITextField.m */; };
 		4972F7471BDDA91800E49079 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4972F7461BDDA91800E49079 /* main.m */; };
 		4972F74A1BDDA91800E49079 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4972F7491BDDA91800E49079 /* AppDelegate.m */; };
@@ -35,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		490C3F491BEADF9E00180EDE /* FloatingToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatingToolbar.h; sourceTree = "<group>"; };
+		490C3F4A1BEADF9E00180EDE /* FloatingToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatingToolbar.m; sourceTree = "<group>"; };
 		493CCBE81BE42D45003DBD84 /* CustomUITextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomUITextField.h; sourceTree = "<group>"; };
 		493CCBE91BE42D45003DBD84 /* CustomUITextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomUITextField.m; sourceTree = "<group>"; };
 		4972F7421BDDA91800E49079 /* BlocBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlocBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +115,8 @@
 				4972F7451BDDA91800E49079 /* Supporting Files */,
 				493CCBE81BE42D45003DBD84 /* CustomUITextField.h */,
 				493CCBE91BE42D45003DBD84 /* CustomUITextField.m */,
+				490C3F491BEADF9E00180EDE /* FloatingToolbar.h */,
+				490C3F4A1BEADF9E00180EDE /* FloatingToolbar.m */,
 			);
 			path = BlocBrowser;
 			sourceTree = "<group>";
@@ -275,6 +280,7 @@
 				493CCBEA1BE42D45003DBD84 /* CustomUITextField.m in Sources */,
 				4972F74D1BDDA91800E49079 /* ViewController.m in Sources */,
 				4972F74A1BDDA91800E49079 /* AppDelegate.m in Sources */,
+				490C3F4B1BEADF9E00180EDE /* FloatingToolbar.m in Sources */,
 				4972F7471BDDA91800E49079 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

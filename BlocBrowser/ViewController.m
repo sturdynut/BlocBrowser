@@ -9,14 +9,17 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 #import "CustomUITextField.h"
+#import "FloatingToolbar.h"
 
-@interface ViewController () <WKNavigationDelegate, UITextFieldDelegate>
+#define kWebBrowserBackString NSLocalizedString(@"Back", @"Back command")
+#define kWebBrowserForwardString NSLocalizedString(@"Forward", @"Forward command")
+#define kWebBrowserStopString NSLocalizedString(@"Stop", @"Stop command")
+#define kWebBrowserRefreshString NSLocalizedString(@"Refresh", @"Reload command")
+
+@interface ViewController () <WKNavigationDelegate, UITextFieldDelegate, FloatingToolbarDelegate>
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) CustomUITextField *textField;
-@property (nonatomic, strong) UIButton *backButton;
-@property (nonatomic, strong) UIButton *forwardButton;
-@property (nonatomic, strong) UIButton *stopButton;
-@property (nonatomic, strong) UIButton *reloadButton;
+@property (nonatomic, strong) FloatingToolbar *floatingToolbar;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @end
 
@@ -46,13 +49,7 @@
     
     [self.view addSubview:newWebView];
     self.webView = newWebView;
-    
-    for (UIButton *button in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
-        [button removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
-    }
-    
-    [self initNavigationButtons];
-    
+    [self initFloatingToolbar];
     self.textField.text = nil;
     
     [self onStateChanged];
@@ -65,7 +62,7 @@
     self.webView.navigationDelegate = self;
     
     [self initUrlField];
-    [self initNavigationButtons];
+    [self initFloatingToolbar];
     [self initViews:mainView];
     [self initLoader];
     
@@ -152,18 +149,25 @@
     [self onStateChanged];
 }
 
+#pragma mark - FloatingToolbarDelegate
+
+- (void) floatingToolbar:(FloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title {
+    if ([title isEqual:kWebBrowserBackString]) {
+        [self.webView goBack];
+    } else if ([title isEqual:kWebBrowserForwardString]) {
+        [self.webView goForward];
+    } else if ([title isEqual:kWebBrowserStopString]) {
+        [self.webView stopLoading];
+    } else if ([title isEqual:kWebBrowserRefreshString]) {
+        [self.webView reload];
+    }
+}
+
 #pragma mark - Helpers
 
 -(void) initLoader {
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
-}
-
--(void) initNavigationButtons {
-    self.backButton = [self setupNavButton:self.backButton title:@"Back" action:@selector(goBack)];
-    self.forwardButton = [self setupNavButton:self.forwardButton title:@"Forward" action:@selector(goForward)];
-    self.stopButton = [self setupNavButton:self.stopButton title:@"Stop" action:@selector(stopLoading)];
-    self.reloadButton = [self setupNavButton:self.reloadButton title:@"Refresh" action:@selector(reload)];
 }
 
 -(void) initUrlField {
@@ -178,8 +182,13 @@
     self.textField.delegate = self;
 }
 
+-(void) initFloatingToolbar {
+    self.floatingToolbar = [[FloatingToolbar alloc] initWithFourTitles:@[kWebBrowserBackString, kWebBrowserForwardString, kWebBrowserStopString, kWebBrowserRefreshString]];
+    self.floatingToolbar.delegate = self;
+}
+
 -(void) initViews:(UIView *)mainView {
-    NSArray *subViews = @[self.webView, self.textField, self.backButton, self.forwardButton, self.stopButton, self.reloadButton];
+    NSArray *subViews = @[self.webView, self.textField, self.floatingToolbar];
     
     for (UIView *view in subViews) {
         [mainView addSubview:view];
@@ -190,31 +199,24 @@
     static const CGFloat itemHeight = 50;
     CGFloat width = CGRectGetWidth(self.view.bounds);
     CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight - itemHeight;
-    CGFloat buttonWidth = CGRectGetWidth(self.view.bounds) / 4;
     
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
     
-    [self layoutNavButtons:buttonWidth height:itemHeight];
-}
-
--(void) layoutNavButtons:(CGFloat)width height:(CGFloat)height {
-    CGFloat currentButtonX = 0;
+    CGFloat toolbarX = 0;
+    CGFloat toolbarY = CGRectGetMaxY(self.webView.bounds);
     
-    for (UIButton *thisButton in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
-        thisButton.frame = CGRectMake(currentButtonX, CGRectGetMaxY(self.webView.frame), width, height);
-        currentButtonX += width;
-    }
+    self.floatingToolbar.frame = CGRectMake(toolbarX, toolbarY, width, 60);
 }
 
 -(void) onStateChanged {
     NSString *webpageTitle = [self.webView.title copy];
     self.title = [webpageTitle length] ? webpageTitle : self.webView.URL.absoluteString;
     
-    self.backButton.enabled = self.webView.canGoBack;
-    self.forwardButton.enabled = self.webView.canGoForward;
-    self.stopButton.enabled = self.webView.isLoading;
-    self.reloadButton.enabled = !self.webView.isLoading && self.webView.URL;
+    [self.floatingToolbar setEnabled:[self.webView canGoBack] forButtonWithTitle:kWebBrowserBackString];
+    [self.floatingToolbar setEnabled:[self.webView canGoForward] forButtonWithTitle:kWebBrowserForwardString];
+    [self.floatingToolbar setEnabled:[self.webView isLoading] forButtonWithTitle:kWebBrowserStopString];
+    [self.floatingToolbar setEnabled:![self.webView isLoading] && self.webView.URL forButtonWithTitle:kWebBrowserRefreshString];
     
     if (self.webView.isLoading) {
         [self.activityIndicator startAnimating];
@@ -222,17 +224,6 @@
     else {
         [self.activityIndicator stopAnimating];
     }
-}
-
--(UIButton *) setupNavButton:(UIButton *)button title:(NSString *)title action:(SEL)action {
-    NSString *titleDescription = [NSString stringWithFormat:@"%@ command", title];
-    
-    button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setEnabled:NO];
-    [button setTitle:NSLocalizedString(title, titleDescription) forState:UIControlStateNormal];
-    [button addTarget:self.webView action:action forControlEvents:UIControlEventTouchUpInside];
-    
-    return button;
 }
 
 @end
