@@ -44,13 +44,7 @@
 
 -(void)resetWebView {
     [self.webView removeFromSuperview];
-    WKWebView *newWebView = [[WKWebView alloc] init];
-    newWebView.navigationDelegate = self;
-    
-    [self.view addSubview:newWebView];
-    self.webView = newWebView;
-    [self initFloatingToolbar];
-    self.textField.text = nil;
+    [self loadView];
     
     [self onStateChanged];
 }
