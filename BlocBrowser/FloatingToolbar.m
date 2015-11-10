@@ -16,7 +16,12 @@
 @property (nonatomic, weak) UILabel *currentLabel;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
+@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
 
+//@property (nonatomic) CGPoint lastTouchPosition;
+//@property (nonatomic) CGFloat horizontalScale;
+//@property (nonatomic) CGFloat verticalScale;
 @end
 
 @implementation FloatingToolbar
@@ -62,6 +67,12 @@
         
         self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panFired:)];
         [self addGestureRecognizer:self.panGesture];
+        
+        self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
+        [self addGestureRecognizer:self.pinchGesture];
+        
+        self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
+        [self addGestureRecognizer:self.longPressGesture];
     }
     
     return self;
@@ -95,13 +106,14 @@
 }
 
 - (void) tapFired:(UITapGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateRecognized) { // #3
-        CGPoint location = [recognizer locationInView:self]; // #4
-        UIView *tappedView = [self hitTest:location withEvent:nil]; // #5
+    if (recognizer.state == UIGestureRecognizerStateRecognized) {
+        CGPoint location = [recognizer locationInView:self];
+        UIView *tappedView = [self hitTest:location withEvent:nil];
         
-        if ([self.labels containsObject:tappedView]) { // #6
+        if ([self.labels containsObject:tappedView]) {
             if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
-                [self.delegate floatingToolbar:self didSelectButtonWithTitle:((UILabel *)tappedView).text];
+                self.currentLabel = ((UILabel *)tappedView);
+                [self.delegate floatingToolbar:self didSelectButtonWithTitle:self.currentLabel.text];
             }
         }
     }
@@ -118,6 +130,27 @@
         }
         
         [recognizer setTranslation:CGPointZero inView:self];
+    }
+}
+
+- (void) pinchFired:(UIPinchGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
+        if ([self.delegate respondsToSelector:@selector(floatingToolbar:didTryToPinchWithScale:)]) {
+            CGFloat scale = [recognizer scale];
+            [self.delegate floatingToolbar:self didTryToPinchWithScale:scale];
+        }
+    }
+}
+
+- (void) longPressFired:(UILongPressGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
+        // Rotate the colors on the labels
+        for (NSInteger i=0; i<self.labels.count; i++) {
+            NSInteger nextLabelIndex = i == self.labels.count - 1 ? 0 : i + 1;
+            NSLog(@"Next index: %li and index of: %li", (long)nextLabelIndex, (long)i);
+            UILabel *thisLabel = self.labels[i];
+            thisLabel.backgroundColor = ((UILabel *)self.labels[nextLabelIndex]).backgroundColor;
+        }
     }
 }
 

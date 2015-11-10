@@ -168,6 +168,48 @@
     }
 }
 
+- (void) floatingToolbar:(FloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
+//    ARG!
+    
+//    CGPoint origin = toolbar.frame.origin;
+//    CGFloat origX = origin.x;
+//    CGFloat origY = origin.y;
+//    CGFloat origWidth = CGRectGetWidth(toolbar.frame);
+//    CGFloat origHeight = CGRectGetHeight(toolbar.frame);
+//    CGFloat newWidth = origWidth * scale;
+//    CGFloat newHeight = origHeight * scale;
+//
+//    BOOL isGettingWider = newWidth > origWidth;
+//    BOOL isGettingTaller = newHeight > origHeight;
+//    
+//    CGFloat newX = origX;
+//    if (isGettingWider) {
+//        newX = origX - ((newWidth - origWidth) / 2);
+//    }
+//    else {
+//        newX = origX - ((origWidth - newWidth) / 2);
+//    }
+//    
+//    CGFloat newY = origY;
+//    if (isGettingTaller) {
+//        newY = origY - ((newHeight - origHeight) / 2);
+//    }
+//    else {
+//        newY = origY - ((origHeight - newHeight) / 2);
+//    }
+    
+//    NSLog(@"New x: %f, y: %f, w: %f, h: %f", newX, newY, newWidth, newHeight);
+
+//    CGRect newFrame = CGRectMake(newX, newY, newWidth, newHeight);
+//    self.floatingToolbar.frame = newFrame;
+//    
+//    [self.view setNeedsDisplay];
+//    [self.view layoutIfNeeded];
+    
+    // @todo: Scale the width / height of the entire toolbar
+    toolbar.transform = CGAffineTransformMakeScale(scale, scale);
+}
+
 #pragma mark - Helpers
 
 -(void) initLoader {
