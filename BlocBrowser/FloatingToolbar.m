@@ -18,10 +18,6 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
-
-//@property (nonatomic) CGPoint lastTouchPosition;
-//@property (nonatomic) CGFloat horizontalScale;
-//@property (nonatomic) CGFloat verticalScale;
 @end
 
 @implementation FloatingToolbar
