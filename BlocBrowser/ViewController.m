@@ -69,8 +69,8 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
-- (void) viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
     [self layoutViews];
 }
@@ -157,6 +157,21 @@
     }
 }
 
+- (void) floatingToolbar:(FloatingToolbar *)toolbar didTryToPanWithOffset:(CGPoint)offset {
+    CGPoint startingPoint = toolbar.frame.origin;
+    CGPoint newPoint = CGPointMake(startingPoint.x + offset.x, startingPoint.y + offset.y);
+    
+    CGRect potentialNewFrame = CGRectMake(newPoint.x, newPoint.y, CGRectGetWidth(toolbar.frame), CGRectGetHeight(toolbar.frame));
+    
+    if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
+        toolbar.frame = potentialNewFrame;
+    }
+}
+
+- (void) floatingToolbar:(FloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
+    toolbar.transform = CGAffineTransformMakeScale(scale, scale);
+}
+
 #pragma mark - Helpers
 
 -(void) initLoader {
@@ -197,10 +212,11 @@
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
     
-    CGFloat toolbarX = 0;
+    CGFloat toolbarWidth = width * .75;
+    CGFloat toolbarX = (width - toolbarWidth) / 2;
     CGFloat toolbarY = CGRectGetMaxY(self.webView.bounds);
     
-    self.floatingToolbar.frame = CGRectMake(toolbarX, toolbarY, width, 60);
+    self.floatingToolbar.frame = CGRectMake(toolbarX, toolbarY, toolbarWidth, 60);
 }
 
 -(void) onStateChanged {

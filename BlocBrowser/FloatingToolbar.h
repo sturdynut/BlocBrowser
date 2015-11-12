@@ -15,7 +15,8 @@
 @optional
 
 - (void) floatingToolbar:(FloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title;
-
+- (void) floatingToolbar:(FloatingToolbar *)toolbar didTryToPanWithOffset:(CGPoint)offset;
+- (void) floatingToolbar:(FloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale;
 @end
 
 @interface FloatingToolbar : UIView
